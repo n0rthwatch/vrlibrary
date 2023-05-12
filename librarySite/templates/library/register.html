@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block title %}О нас{% endblock title %}
+{% load static %}
+{% block content %}
+	<div class="auth h-full">
+		<div class="container mx-auto h-full mb-8 py-16 flex items-start justify-center flex-col">
+			<form method="post"
+			      class="p-12 rounded-2xl bg-main flex items-start flex-col w-96 shadow-lg">
+				<h1 class="mb-3 text-2xl font-semibold">
+					Регистрация
+				</h1>
+				{% csrf_token %}
+				<div class="flex items-start flex-col gap-6 w-full mb-8">
+					{% for field in form %}
+						<div class="flex items-start flex-col gap-2 w-full">
+							{{ field.label_tag }}
+							{{ field }}
+							{{ field.help_text }}
+							{% for error in field.errors %}
+								<p>- {{ error }}</p>
+							{% endfor %}
+						</div>
+					{% endfor %}
+				</div>
+
+				<input type="submit"
+				       value="Регистрация"
+				       class="nav-link w-full block text-center mx-auto cursor-pointer mb-4 shadow-md">
+
+				<p class="text-center w-full text-sm">
+					Были на сайте? <br>
+					<a href="{% url 'register' %}"
+					   class="font-bold text-md underline-offset-2 underline decoration-accent/70 decoration-2">Войти</a>
+				</p>
+
+			</form>
+		</div>
+	</div>
+
+{% endblock content %}

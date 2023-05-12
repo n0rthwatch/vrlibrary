@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru" class="h-full">
+<head>
+	<meta charset="UTF-8"/>
+	<meta
+		name="viewport"
+		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+	/>
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+	<link rel="stylesheet" href="{% static 'css/splide.min.css' %}">
+	<link rel="stylesheet" href="{% static 'css/output.css' %}"/>
+	<link rel="stylesheet" href="{% static 'fonts/fonts.css' %}"/>
+
+	<link
+		rel="apple-touch-icon"
+		sizes="180x180"
+		href="{% static 'images/apple-touch-icon.png' %}"
+	/>
+	<link
+		rel="icon"
+		type="image/png"
+		sizes="32x32"
+		href="{% static 'images/favicon-16x16.png' %}"
+	/>
+	<link
+		rel="icon"
+		type="image/png"
+		sizes="16x16"
+		href="{% static 'images/favicon-32x32.png' %}"
+	/>
+	<link rel="manifest" href="{% static 'images/site.webmanifest' %}"/>
+	<link
+		rel="mask-icon"
+		href="{% static 'images/safari-pinned-tab.svg' %}"
+		color="#5bbad5"
+	/>
+	<meta name="msapplication-TileColor" content="#da532c"/>
+	<meta name="theme-color" content="#ffffff"/>
+
+	<title>VR LIBRARY &#167; {% block title %}{% endblock title %}</title>
+</head>
+<body class="bg-main selection:bg-accent/40 h-full">
+<div class="wrapper min-h-full flex flex-col">
+	{% if messages %}
+		<ul class="site-messages z-10">
+			{% for message in messages %}
+				<li
+					class="site-message relative {% if message.tags %} {{ message.tags }} {% endif %}"
+				>
+					{{ message }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	<header class="py-5 shadow-lg">
+		<div
+			class="container mx-auto flex h-full flex-row items-center justify-between gap-4"
+		>
+			<div class="left-header flex items-center justify-start gap-8">
+				<div class="logo">
+					<a href="{% url 'homepage' %}">
+						<img
+							src="{% static 'images/logo_dark.png' %}"
+							alt="Logotype VR Lib"
+							class="h-[54px] w-[125px]"
+						/>
+					</a>
+				</div>
+				<nav class="hidden md:block">
+					<ul class="nav-list flex h-10 items-center justify-start gap-4">
+						<li class="nav-item">
+							<a href="{% url 'books' %}" class="nav-link">Книги</a>
+						</li>
+						<li class="nav-item">
+							<a href="{% url 'news' %}" class="nav-link">Новости</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			<div
+				class="right-header hidden flex-grow items-center justify-end gap-4 lg:flex"
+			>
+				<form
+					class="relative flex w-full justify-end"
+					method="GET"
+					action="{% url 'search' %}"
+				>
+					<input
+						class="relative w-32 rounded-md bg-main px-4 py-[.5rem] italic outline outline-1 outline-accent/70 transition-all duration-300 placeholder:italic placeholder:text-accent placeholder:text-opacity-70 focus:w-full focus:flex-grow"
+						type="text"
+						name="query"
+						placeholder="Поиск..."
+					/>
+					<button class="search-btn" type="submit">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="3"
+							stroke="currentColor"
+							class="h-4 w-4"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+							></path>
+						</svg>
+					</button>
+				</form>
+				<div class="dropdown">
+					<div class="relative inline-block text-left dropdown-block">
+						<div>
+							<button type="button"
+							        class="dropdown-btn inline-flex w-full justify-center gap-x-1.5 rounded-md px-4 py-[.5rem] text-accent shadow-sm outline-1 outline-accent/70 outline whitespace-nowrap">
+								Аккаунт
+								<svg class="-mr-1 h-5 w-5 text-accent-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+									<path fill-rule="evenodd"
+									      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+									      clip-rule="evenodd"></path>
+								</svg>
+							</button>
+						</div>
+
+						<div class="dropdown-menu hidden absolute z-10 mt-2 w-56 right-0 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+							<div class="py-1">
+								{% if user.is_authenticated %}
+									<a href="{% url 'logout' %}" class="dropdown-menu-item">
+										Выйти <span class="text-[12px]"> {{ user.username }}</span>
+									</a>
+									<a href="{% url 'profile' %}" class="dropdown-menu-item">Избранное</a>
+								{% else %}
+									<div class="nav-item">
+										<a href="{% url 'login' %}" class="dropdown-menu-item">Логин</a>
+									</div>
+									<div class="nav-item">
+										<a href="{% url 'register' %}" class="dropdown-menu-item">Регистрация</a>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+
+	<main class="flex-auto relative pb-12">
+		{% block content %}{% endblock content %}
+	</main>
+
+	<footer class="footer py-10 bg-accent text-main">
+		<div class="container mx-auto flex flex-row items-center justify-between">
+			<div class="flex items-center">
+				<img src="{% static 'images/mini-logo.svg' %}" alt="VR Library" class="w-10 h-10 mr-6">
+				<p>© VR Library 2023.</p>
+			</div>
+			<div class="flex items-center gap-8">
+				<a href="#">
+					<img src="{% static 'images/VK.svg' %}" alt="" class="w-6 h-6">
+				</a>
+				<a href="#">
+					<img src="{% static 'images/Telegram.svg' %}" alt="" class="w-6 h-6">
+				</a>
+				<a href="#">
+					<img src="{% static 'images/Skype.svg' %}" alt="" class="w-6 h-6">
+				</a>
+				<a href="#">
+					<img src="{% static 'images/TikTok.svg' %}" alt="" class="w-6 h-6">
+				</a>
+			</div>
+		</div>
+
+	</footer>
+</div>
+
+<script src="{% static 'js/splide.min.js' %}"></script>
+<script src="{% static 'js/site.js' %}"></script>
+</body>
+</html>

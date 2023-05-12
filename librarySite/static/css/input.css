@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch*/
+
+.nav-item {
+    @apply h-full block
+}
+
+.nav-link {
+    @apply px-5 py-2 shadow-md block bg-main text-accent rounded-md outline outline-1 outline-accent/70 hover:bg-accent hover:text-main transition-all whitespace-nowrap
+}
+
+.profile-btn span {
+    @apply text-sm font-light text-opacity-50
+}
+
+.site-messages {
+    @apply flex flex-col justify-start fixed bottom-2 right-0 p-2 w-full md:w-[450px]
+}
+
+.fade-hide {
+    opacity: 0;
+    transform: translateX(300px);
+    transition: .5s;
+}
+
+.site-messages .site-message {
+    @apply p-4 mt-2 rounded-md bg-accent text-main cursor-pointer
+}
+
+header .search-btn {
+    @apply absolute bottom-1/2 translate-y-1/2 right-2 text-accent/70
+}
+
+.book-table th,
+.book-table td {
+    @apply border border-slate-500/40 p-4
+}
+
+.pagination-bar li a {
+    @apply px-2 py-2 block text-[14px]
+}
+
+.pagination-bar li {
+    @apply border-2 border-accent/30 mx-1.5 rounded-md
+}
+
+.genres-list {
+    opacity: 1;
+    overflow: hidden;
+
+    @apply transition-all
+}
+
+.dropdown-menu-item {
+    @apply text-accent/80 hover:text-accent px-2.5 py-3 text-sm font-medium flex items-center justify-between border-b border-b-accent/20 last-of-type:border-none
+}
+
+.my-slider-progress {
+    @apply bg-accent/20
+}
+
+.my-slider-progress-bar {
+    transition: width 700ms ease;
+
+    @apply bg-accent h-1 w-0
+}
+
+.splide__arrow {
+    @apply h-full
+}
+
+.splide__arrow svg {
+    @apply fill-main w-7 h-7
+}
+
+.splide__slide img {
+    @apply max-h-max w-full object-cover overflow-x-hidden
+}
+
+.news-header-img {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.auth::before {
+    content: "";
+    z-index: -10;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url('../images/library-stock-image-1400x700.webp');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(60%);
+}

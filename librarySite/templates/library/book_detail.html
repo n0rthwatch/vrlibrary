@@ -1,0 +1,176 @@
+{% extends 'base.html' %} {% block title %}{{ object.title }}{% endblock title %}
+{% block content %}
+	<div class="container mx-auto">
+		<h1 class="mb-8 border-b-2 border-accent/20 py-10 text-4xl font-semibold">
+			{{ object.title }}
+		</h1>
+
+		<div class="flex gap-8 mb-10">
+			<div class="image w-3/12">
+				<img src="{{ object.image.url }}" alt="{{ object.title }}" class="w-full"/>
+			</div>
+			<div class="description w-9/12">
+				<table
+					class="book-table mb-8 h-min w-full table-fixed border-collapse border border-slate-50"
+				>
+					<tbody>
+					<tr>
+						<th class="w-64 text-start font-semibold">Автор</th>
+						<td>{{ object.author.name }}</td>
+					</tr>
+					<tr>
+						<th class="text-start font-semibold">Год создания</th>
+						<td>{{ object.created_at.year }}</td>
+					</tr>
+					<tr>
+						<th class="text-start font-semibold">Жанры</th>
+						<td>
+							{% for genre in object.genre.all %}
+								<a
+									href="{% url 'search' %}?genre={{ genre.name }}"
+									class="mx-1.5 mb-4"
+								><span
+									class="mr-1.5 whitespace-nowrap rounded-full bg-accent/70 px-3 py-1.5 text-main transition-colors last-of-type:mr-0 hover:bg-accent"
+								>{{ genre.name }}</span
+								></a
+								>
+							{% endfor %}
+						</td>
+					</tr>
+					<tr>
+						<th class="text-start font-semibold">Скачивания</th>
+						<td>{{ object.downloads_count }}</td>
+					</tr>
+					<tr>
+						<th class="text-start font-semibold">Страниц</th>
+						<td>{{ object.pages_count }}</td>
+					</tr>
+					</tbody>
+				</table>
+				<p class="mb-8">{{ object.description }}</p>
+
+				{% if request.user.is_authenticated %}
+					<div class="flex items-center justify-start gap-4">
+						<a
+							class="block w-full rounded-md bg-main py-3 text-center text-accent outline outline-1 outline-accent/70 hover:bg-accent hover:text-main md:w-64 transition-colors"
+							href="{{ book.file.url }}"
+							download
+						>Скачать книгу</a>
+
+						{% with profile=request.user.profile %}
+							{% if profile in book.user_favorites.all %}
+								<form action="{% url 'remove_favorite' book.id %}" method="post" name="dislike">
+									{% csrf_token %}
+									<button type="submit"
+									        name="favorite_remove"
+									        value="{{ book.id }}"
+									        class="text-accent p-1.5 rounded-md outline outline-1 outline-accent/70 hover:bg-accent hover:text-main transition-colors"
+									        title="Убрать из избранного">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+											<path d="M3.53 2.47a.75.75 0 00-1.06 1.06l18 18a.75.75 0 101.06-1.06l-18-18zM20.25 5.507v11.561L5.853 2.671c.15-.043.306-.075.467-.094a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93zM3.75 21V6.932l14.063 14.063L12 18.088l-7.165 3.583A.75.75 0 013.75 21z"></path>
+										</svg>
+									</button>
+								</form>
+							{% else %}
+								<form action="{% url 'add_favorite' book.id %}" method="post" name="like">
+									{% csrf_token %}
+									<button type="submit"
+									        name="favorite_add"
+									        value="{{ book.id }}"
+									        class="text-accent p-1.5 rounded-md outline outline-1 outline-accent/70 hover:bg-accent hover:text-main transition-colors"
+									        title="Добавить в избранное">
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+											<path fill-rule="evenodd"
+											      d="M6.32 2.577a49.255 49.255 0 0111.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 01-1.085.67L12 18.089l-7.165 3.583A.75.75 0 013.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93z"
+											      clip-rule="evenodd"></path>
+										</svg>
+									</button>
+								</form>
+							{% endif %}
+							{% if book.user_favorites.count > 1 %}
+								<p class="text-sm">Эта книга у {{ book.user_favorites.count }} людей в избранном</p>
+							{% endif %}
+						{% endwith %}
+					</div>
+				{% else %}
+					<p>Для скачивания нужно авторизоваться. <a href="{% url 'register' %}">Регистрация</a></p>
+				{% endif %}
+			</div>
+		</div>
+
+		<h2 class="mb-8 border-t-2 border-accent/20 py-6 text-3xl font-semibold">
+			Популярные книги:
+		</h2>
+
+		<section
+			class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-10"
+		>
+			{% for book in book_list %}
+				<article
+					class="book-card flex flex-col items-center justify-start rounded-xl bg-accent/5 p-6"
+				>
+					<div class="book-header mb-4">
+						<img
+							src="{{ book.image.url }}"
+							alt="{{ book.title }}"
+							class="max-h-[18rem] w-full"
+						/>
+					</div>
+					<div class="book-body mb-4 w-full">
+						<p class="title text-md text-center">{{ book.title }}</p>
+					</div>
+					<div
+						class="book-footer mt-auto flex w-full flex-col items-center justify-between"
+					>
+						<p class="mb-3 text-center text-sm text-accent/80">
+							{{ book.author.name }}
+						</p>
+						<div class="mb-3 flex w-full flex-row items-center justify-between">
+							<div title="Количество скачиваний" class="flex items-center gap-2">
+								<div class="rounded-sm bg-accent/50 p-0.5">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										class="h-4 w-4 stroke-2 text-main"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z"
+											clip-rule="evenodd"
+										></path>
+									</svg>
+								</div>
+								<p class="h-min leading-none">{{ book.downloads_count }}</p>
+							</div>
+							<div title="Количество страниц" class="flex items-center gap-2">
+								<p class="h-min leading-none">{{ book.pages_count }}</p>
+								<div class="rounded-sm bg-accent/50 p-0.5">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										class="h-4 w-4 text-main"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 001.075.676L10 15.082l5.925 2.844A.75.75 0 0017 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0010 2z"
+											clip-rule="evenodd"
+										></path>
+									</svg>
+								</div>
+							</div>
+						</div>
+						<a
+							href="/books/{{ book.id }}"
+							class="ease w-full rounded-md bg-transparent py-2 text-center text-accent outline outline-1 outline-accent/70 transition-all hover:bg-accent hover:text-main"
+						>Подробнее...</a
+						>
+					</div>
+				</article>
+			{% endfor %}
+		</section>
+		<a href="{% url 'books' %}?order_by=-downloads_count" class="nav-link w-48 text-center mx-auto">Посмотреть ещё</a>
+
+	</div>
+{% endblock content %}

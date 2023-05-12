@@ -1,0 +1,83 @@
+{% extends 'base.html' %} {% block title %}Регистрация{% endblock title %}
+{% block content %} {% if books %}
+	<div class="container mx-auto">
+		<h1 class="mb-8 border-b-2 border-accent/20 py-10 text-4xl font-semibold">
+			Резульаты по запросу <span class="font-semibold italic">'{{ query }}'</span>:
+		</h1>
+
+		<section
+			class="grid grid-cols-1 gap-8 py-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+		>
+			{% for book in books %}
+				<article
+					class="book-card flex flex-col items-center justify-start rounded-xl bg-accent/5 p-6"
+				>
+					<div class="book-header mb-4">
+						<img
+							src="{{ book.image.url }}"
+							alt="{{ book.title }}"
+							class="max-h-[18rem] w-full"
+						/>
+					</div>
+					<div class="book-body mb-4 w-full">
+						<p class="title text-md text-center">{{ book.title }}</p>
+					</div>
+					<div
+						class="book-footer mt-auto flex w-full flex-col items-center justify-between"
+					>
+						<p class="mb-3 text-center text-sm text-accent/80">
+							{{ book.author.name }}
+						</p>
+						<div class="mb-3 flex w-full flex-row items-center justify-between">
+							<div title="Количество скачиваний" class="flex items-center gap-2">
+								<div class="rounded-sm bg-accent/50 p-0.5">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										class="h-4 w-4 stroke-2 text-main"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z"
+											clip-rule="evenodd"
+										></path>
+									</svg>
+								</div>
+								<p class="h-min leading-none">{{ book.downloads_count }}</p>
+							</div>
+							<div title="Количество страниц" class="flex items-center gap-2">
+								<p class="h-min leading-none">{{ book.pages_count }}</p>
+								<div class="rounded-sm bg-accent/50 p-0.5">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										class="h-4 w-4 text-main"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25a.75.75 0 001.075.676L10 15.082l5.925 2.844A.75.75 0 0017 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0010 2z"
+											clip-rule="evenodd"
+										></path>
+									</svg>
+								</div>
+							</div>
+						</div>
+						<a
+							href="/books/{{ book.id }}"
+							class="ease w-full rounded-md bg-transparent py-2 text-center text-accent outline outline-1 outline-accent/70 transition-all hover:bg-accent hover:text-main"
+						>Подробнее...</a
+						>
+					</div>
+				</article>
+			{% endfor %}
+		</section>
+		{% else %}
+		<p class="py-10 text-center text-4xl">
+			Нет результатов по запросу
+			<span class="font-semibold italic">'{{ query }}'</span>
+		</p>
+		<a href="{% url 'homepage' %}" class="nav-link w-48 text-center mx-auto">На главную</a>
+	</div>
+{% endif %} {% endblock content %}
